@@ -1,0 +1,36 @@
+{
+  "name": "diploma",
+  "version": "0.0.1",
+  "description": "Server for my diploma",
+  "main": "server.ts",
+  "author": "Sergey Shulyak",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-passport": "^4.0.1",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.8.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.44",
+    "@types/koa-bodyparser": "^4.2.0",
+    "@types/koa-passport": "^4.0.1",
+    "@types/koa-router": "^7.0.27",
+    "@types/koa-session": "^5.7.1",
+    "@types/passport-strategy": "^0.2.32",
+    "@types/passport-twitter": "^1.0.33",
+    "nodemon": "^1.15.1",
+    "ts-node": "^5.0.0",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.9.0",
+    "typescript": "^2.7.2"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' ./src/server.ts"
+  }
+}

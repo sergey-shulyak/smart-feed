@@ -1,3 +1,10 @@
+import * as env from "dotenv";
+const envLoadedResult = env.config();
+
+if (envLoadedResult.error) {
+  console.error("Unable to load env", envLoadedResult.error);
+}
+
 import * as Koa from "koa";
 import * as Router from "koa-router";
 import * as bodyParser from "koa-bodyparser";

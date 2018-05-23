@@ -30,6 +30,12 @@
     "@types/keygrip" "*"
     "@types/node" "*"
 
+"@types/dotenv@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/dotenv/-/dotenv-4.0.2.tgz#f2983f0afe9fd7f6eb8aef515a4d77f4cbaa0597"
+  dependencies:
+    "@types/node" "*"
+
 "@types/events@*":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.1.0.tgz#93b1be91f63c184450385272c47b6496fd028e02"
@@ -133,6 +139,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
+"@types/synaptic@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/synaptic/-/synaptic-1.0.3.tgz#9bb132018cfc27d1476515960c29ce93403df7b1"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -185,6 +195,12 @@ anymatch@^2.0.0:
   dependencies:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
+
+"apparatus@>= 0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/apparatus/-/apparatus-0.0.9.tgz#37dcd25834ad0b651076596291db823eeb1908bd"
+  dependencies:
+    sylvester ">= 0.0.8"
 
 aproba@^1.0.3:
   version "1.2.0"
@@ -292,6 +308,10 @@ bcrypt-pbkdf@^1.0.0:
 binary-extensions@^1.0.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.11.0.tgz#46aa1751fb6a2f93ee5e689bb1087d4b14c6c205"
+
+bindings@^1.2.1:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
 
 block-stream@*:
   version "0.0.9"
@@ -628,6 +648,10 @@ dot-prop@^4.1.0:
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
   dependencies:
     is-obj "^1.0.0"
+
+dotenv@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -1427,6 +1451,10 @@ mime-types@^2.0.7, mime-types@^2.1.12, mime-types@~2.1.16, mime-types@~2.1.18, m
   dependencies:
     mime-db "~1.33.0"
 
+mimir@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/mimir/-/mimir-0.0.1.tgz#be2a26b5aefc58f5c6f29bfcdf8eb5a9485c8e99"
+
 minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
@@ -1462,6 +1490,10 @@ nan@^2.3.0:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
 
+nan@^2.4.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
+
 nanomatch@^1.2.9:
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/nanomatch/-/nanomatch-1.2.9.tgz#879f7150cb2dab7a471259066c104eee6e0fa7c2"
@@ -1478,6 +1510,16 @@ nanomatch@^1.2.9:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
+
+natural@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/natural/-/natural-0.5.6.tgz#f2152b61f36befc6fe0ed6bc811fb499e6e9dccd"
+  dependencies:
+    apparatus ">= 0.0.9"
+    sylvester ">= 0.0.12"
+    underscore ">=1.3.1"
+  optionalDependencies:
+    webworker-threads ">=0.6.2"
 
 negotiator@0.6.1:
   version "0.6.1"
@@ -1641,12 +1683,27 @@ passport-local@^1.0.0:
   dependencies:
     passport-strategy "1.x.x"
 
+passport-medium@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/passport-medium/-/passport-medium-0.0.7.tgz#54b9023941e3d0fc55f6dc2f84350aa2b5999404"
+  dependencies:
+    passport-oauth2 "^1.3.0"
+
 passport-oauth1@1.x.x:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/passport-oauth1/-/passport-oauth1-1.1.0.tgz#a7de988a211f9cf4687377130ea74df32730c918"
   dependencies:
     oauth "0.9.x"
     passport-strategy "1.x.x"
+    utils-merge "1.x.x"
+
+passport-oauth2@^1.3.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth2/-/passport-oauth2-1.4.0.tgz#f62f81583cbe12609be7ce6f160b9395a27b86ad"
+  dependencies:
+    oauth "0.9.x"
+    passport-strategy "1.x.x"
+    uid2 "0.0.x"
     utils-merge "1.x.x"
 
 passport-strategy@1.x.x:
@@ -2110,6 +2167,14 @@ supports-color@^5.2.0:
   dependencies:
     has-flag "^3.0.0"
 
+"sylvester@>= 0.0.12", "sylvester@>= 0.0.8":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/sylvester/-/sylvester-0.0.21.tgz#2987b1ce2bd2f38b0dce2a34388884bfa4400ea7"
+
+synaptic@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/synaptic/-/synaptic-1.1.4.tgz#b058163e2e86a3f86fc964ab792496c0642c13d7"
+
 tar-pack@^3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/tar-pack/-/tar-pack-3.4.1.tgz#e1dbc03a9b9d3ba07e896ad027317eb679a10a1f"
@@ -2254,11 +2319,19 @@ uid-safe@^2.1.3:
   dependencies:
     random-bytes "~1.0.0"
 
+uid2@0.0.x:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
+
 undefsafe@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.2.tgz#225f6b9e0337663e0d8e7cfd686fc2836ccace76"
   dependencies:
     debug "^2.2.0"
+
+underscore@>=1.3.1:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.0.tgz#31dbb314cfcc88f169cd3692d9149d81a00a73e4"
 
 union-value@^1.0.0:
   version "1.0.0"
@@ -2353,6 +2426,13 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+webworker-threads@>=0.6.2:
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/webworker-threads/-/webworker-threads-0.7.13.tgz#c84b18b6ba24125bb9d37342e44deb815162fb83"
+  dependencies:
+    bindings "^1.2.1"
+    nan "^2.4.0"
 
 which@^1.2.9:
   version "1.3.0"

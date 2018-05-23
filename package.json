@@ -1,5 +1,5 @@
 {
-  "name": "diploma",
+  "name": "smart-feed",
   "version": "0.0.1",
   "description": "Server for my diploma",
   "main": "server.ts",
@@ -12,11 +12,16 @@
     "koa-passport": "^4.0.1",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.1",
+    "mimir": "^0.0.1",
+    "natural": "^0.5.6",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.4"
+    "passport-medium": "^0.0.7",
+    "passport-twitter": "^1.0.4",
+    "synaptic": "^1.1.4"
   },
   "devDependencies": {
+    "@types/dotenv": "^4.0.2",
     "@types/koa": "^2.0.44",
     "@types/koa-bodyparser": "^4.2.0",
     "@types/koa-passport": "^4.0.1",
@@ -24,6 +29,8 @@
     "@types/koa-session": "^5.7.1",
     "@types/passport-strategy": "^0.2.32",
     "@types/passport-twitter": "^1.0.33",
+    "@types/synaptic": "^1.0.3",
+    "dotenv": "^5.0.1",
     "nodemon": "^1.15.1",
     "ts-node": "^5.0.0",
     "tslint": "^5.9.1",

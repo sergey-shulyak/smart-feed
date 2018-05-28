@@ -4,6 +4,7 @@ import {Strategy as BearerStrategy} from "passport-http-bearer";
 import {Strategy as TwitterStrategy} from "passport-twitter";
 import {Strategy as MediumStrategy} from "passport-medium"; // tslint:disable-line
 
+import * as db from '../models';
 
 const TWITTER_CONFIG = {
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
@@ -20,15 +21,13 @@ const MEDIUM_CONFIG = {
 function configurePassport() {
     passport.use(new BearerStrategy(
         (token, done) => {
-            // User.findOne({token: token}, function (err, user) {
-            //     if (err) {
-            //         return done(err);
-            //     }
-            //     if (!user) {
-            //         return done(null, false);
-            //     }
-            //     return done(null, user, {scope: 'all'});
-            // });
+            db.User.findOne({accessToken: token})
+                .then((user: any) => {
+                    if (!user) {
+                        return done(null, false);
+                    }
+                    return done(null, user, {scope: "all"});
+                });
         }
     ));
 

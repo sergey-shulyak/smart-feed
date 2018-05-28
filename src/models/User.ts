@@ -22,7 +22,11 @@ export default function (sequelize: Sequelize, dataTypes: DataTypes) {
         },
         salt: {
             type: dataTypes.INTEGER,
-            allowNull: false
+            // allowNull: false
+        },
+        accessToken: {
+            type: dataTypes.STRING,
+            field: 'access_token'
         }
     }, {
         tableName: 'users',

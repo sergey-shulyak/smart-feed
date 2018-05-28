@@ -1,24 +1,31 @@
 import * as env from "dotenv";
-const envLoadedResult = env.config();
 
-if (envLoadedResult.error) {
-  console.error("Unable to load env", envLoadedResult.error);
-}
+env.load();
 
 import * as Koa from "koa";
-import * as Router from "koa-router";
 import * as bodyParser from "koa-bodyparser";
 import * as session from "koa-session";
 import * as passport from "koa-passport";
 
+import * as db from "./models";
 import router from "./routes/rootRouter";
-import configurePassport from "./auth/passportConfig";
+import configurePassport from "./configs/passportConfig";
+import Category from "./models/Category";
+import Publication from "./models/Publication";
+
+db.sequelize.authenticate()
+    .then(() => {
+        console.error('Connected to the database');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
 
 const app = new Koa();
 
 const logging = async (ctx: Koa.Context, next: () => void) => {
-  console.log(`${ctx.method} ${ctx.url} ${ctx.status}`);
-  await next();
+    console.log(`${ctx.method} ${ctx.url} ${ctx.status}`);
+    await next();
 };
 
 app.use(logging);

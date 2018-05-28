@@ -1,6 +1,5 @@
 import * as passport from "koa-passport";
 import {Profile} from "passport";
-import {Strategy as BearerStrategy} from "passport-http-bearer";
 import {Strategy as TwitterStrategy} from "passport-twitter";
 import {Strategy as MediumStrategy} from "passport-medium"; // tslint:disable-line
 
@@ -19,18 +18,6 @@ const MEDIUM_CONFIG = {
 };
 
 function configurePassport() {
-    passport.use(new BearerStrategy(
-        (token, done) => {
-            db.User.findOne({accessToken: token})
-                .then((user: any) => {
-                    if (!user) {
-                        return done(null, false);
-                    }
-                    return done(null, user, {scope: "all"});
-                });
-        }
-    ));
-
     passport.use(
         new TwitterStrategy(TWITTER_CONFIG, (token, tokenSecret, profile, done) => {
             if (!profile) {

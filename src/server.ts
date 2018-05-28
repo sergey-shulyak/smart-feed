@@ -10,6 +10,8 @@ import * as passport from "koa-passport";
 import * as db from "./models";
 import router from "./routes";
 import configurePassport from "./configs/passportConfig";
+import * as HttpStatuses from "http-status-codes";
+import { verify } from "jsonwebtoken";
 
 // Connecting to database
 db.sequelize.authenticate()

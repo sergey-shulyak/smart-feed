@@ -1,8 +1,8 @@
-import {omit, pick} from "lodash";
+import { omit, pick } from "lodash";
 import { sign } from "jsonwebtoken";
 
 import { hashPassword, verifyPassword } from "../utils/encryptionUtils";
-import {User} from "../models";
+import { User } from "../models";
 
 interface IUserData {
   email: string,
@@ -11,7 +11,8 @@ interface IUserData {
 }
 
 export async function createUser(userData: IUserData) {
-  const passwordHash = hashPassword(userData.password);
+  const passwordHash = await hashPassword(userData.password);
+  console.log('HASH', passwordHash)
 
   try {
     return await User.create({ ...userData, passwordHash });
@@ -39,9 +40,22 @@ export async function findByEmailAndPassword(email: string, password: string) {
   return user;
 }
 
+export async function findByEmail(email: string) {
+  const user = await User.findOne({
+    attributes: ["id", "email", "fullName", "passwordHash"],
+    where: { email }
+  });
+
+  if (!user) {
+    throw new Error("Unable to find user by email and password");
+  }
+
+  return user;
+}
+
 export async function authorizeUser(user: any) {
   const payload = pick(user, 'id', 'email', 'fullName');
-  const accessToken = await sign(payload, process.env.JWT_PASSPHRASE, {expiresIn: "1d"});
+  const accessToken = await sign(payload, process.env.JWT_PASSPHRASE, { expiresIn: "1d" });
 
   await user.update({ accessToken });
 

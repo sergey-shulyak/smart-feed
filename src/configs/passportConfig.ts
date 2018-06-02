@@ -4,6 +4,7 @@ import {Strategy as TwitterStrategy} from "passport-twitter";
 import {Strategy as MediumStrategy} from "passport-medium"; // tslint:disable-line
 
 import * as db from '../models';
+import * as userService from "../services/userService";
 
 const TWITTER_CONFIG = {
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
@@ -23,6 +24,18 @@ function configurePassport() {
             if (!profile) {
                 return done(new Error("Unable to authorize with Twitter"));
             }
+
+            console.log('profile', profile);
+
+            //TODO запросить email
+
+            db.User.findOne({where: {fullName: profile.name}})
+            .then((user) => {
+                db.SocialIntegration.findOrCreate({where: {
+
+                }})
+            })
+            db.SocialIntegration
 
             console.log("Authenticated as Twitter user", profile.displayName);
             console.log("Tokens", token, tokenSecret);

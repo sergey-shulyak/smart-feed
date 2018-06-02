@@ -6,19 +6,25 @@ import { verify } from "jsonwebtoken";
 import { authorizeUser, findByAccessToken } from "../services/userService";
 
 const authMiddleware = (async (ctx: Context, next: () => {}) => {
-  const {body, headers} = ctx.request;
+  const { body, headers } = ctx.request;
 
-  const accessToken = body.accessToken || headers['x-access-token'] || ctx.cookies.get('accessToken');
-  const user = await findByAccessToken(accessToken);
+  const accessToken = headers['x-access-token'] || ctx.cookies.get('accessToken') || body && body.accessToken;
 
-  try {
-    const decodedUserData = await verify(accessToken, process.env.JWT_PASSPHRASE);
-  } catch (error) {
-    ctx.redirect('/login');
+  if (!accessToken) {
+    ctx.throw(HttpStatuses.UNAUTHORIZED);
   }
 
-  if (!accessToken || user.accessToken !== accessToken) {
-      ctx.redirect('/login')
+  const user = await findByAccessToken(accessToken);
+  let isTokenValid;
+
+  try {
+    isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
+  } catch (error) {
+    ctx.throw(HttpStatuses.UNAUTHORIZED);
+  }
+
+  if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
+    ctx.throw(HttpStatuses.UNAUTHORIZED);
   }
 
   await next();

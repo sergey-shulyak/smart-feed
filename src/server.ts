@@ -3,6 +3,7 @@ import * as env from "dotenv";
 env.load();
 
 import * as Koa from "koa";
+import * as cors from "@koa/cors";
 import * as bodyParser from "koa-bodyparser";
 import * as session from "koa-session";
 import * as passport from "koa-passport";
@@ -24,6 +25,9 @@ db.sequelize.authenticate()
 
 const app = new Koa();
 
+// CORS
+app.use(cors({ credentials: true }));
+
 // Request logger
 const logging = async (ctx: Koa.Context, next: () => void) => {
     console.log(`${ctx.method} ${ctx.url} ${ctx.status}`);
@@ -33,12 +37,12 @@ const logging = async (ctx: Koa.Context, next: () => void) => {
 // Error handling
 app.use(async (ctx, next) => {
     try {
-       await next();
-    } catch (err) {
-       ctx.status = err.status || 500;
-       ctx.body = err.message;
+        await next();
+    } catch (error) {
+        ctx.status = error.status || 500;
+        ctx.body = { error: error.message };
     }
- });
+});
 
 // Logging
 app.use(logging);

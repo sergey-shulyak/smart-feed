@@ -31,18 +31,20 @@ async function fetchPublications(user: any, type: string, accessToken, accessTok
 
     switch (type) {
         case 'twitter':
-
-            twitter.get('statuses/user_timeline', {}, async (error, tweets, response) => {
-                if (!error) {
-                    console.log(tweets);
-                }
-
-                console.log("TWEETS", tweets);
-            });
-            // return [{
-            //     id: 1,
-            //     text: "Java development test"
-            // }];
+            //
+            // twitter.get('statuses/user_timeline', {}, async (error, tweets, response) => {
+            //     if (!error) {
+            //         console.log(tweets);
+            //     }
+            //
+            //     console.log("TWEETS", tweets);
+            // });
+            return [{
+                // добавить mockApi?))))
+                id: 228,
+                text: "If you log an instance you will notice, that there is a lot of additional stuff. In order to hide such stuff and reduce it to the very interesting information, you can use theget-attribute. Calling it with the option plain = true will only return the values of an instance.",
+                url: 'https://google.com'
+            }];
         case 'facebook':
             break;
         case 'medium':
@@ -64,19 +66,21 @@ export async function fetchAllPublications(user) {
     }
 
     for (const publication of publications) {
-        await db.Publication.create({...publication});
+        await db.Publication.findOrCreate({where: {id: publication.id}, defaults: {...publication}});
     }
 
     const data = {data: publications};
 
-    const {data: classifiedData} = await axios.get("http://localhost:3005/classifyBulk", {
+    const {data: respData} = await axios.get("http://localhost:3005/classifyBulk", {
         data
     });
 
-    for (const classifiedPublication of classifiedData) {
+    console.log("CLASSIFIED DATA", respData.classifiedData);
+
+    for (const classifiedPublication of respData.classifiedData) {
         const category = await db.Category.findById(classifiedPublication.categoryId);
-        await db.Publication.findById(classifiedPublication.publicationId).addCategory(category);
+        await (await db.Publication.findById(classifiedPublication.publicationId)).addCategory(category);
     }
 
-    return classifiedData;
+    return respData.classifiedData;
 }

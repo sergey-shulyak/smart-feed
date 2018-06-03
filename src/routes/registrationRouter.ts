@@ -2,7 +2,7 @@ import * as passport from "passport";
 import * as Router from "koa-router";
 import * as HttpStatuses from "http-status-codes";
 import * as base64 from "base-64";
-import {omit} from "lodash";
+import { omit } from "lodash";
 
 import * as userService from "../services/userService";
 import { verify } from "jsonwebtoken";
@@ -30,7 +30,7 @@ registrationRouter.post("/register", async (ctx, next) => {
 });
 
 registrationRouter.post("/login", async (ctx, next) => {
-    const {credentials} = ctx.request.body;
+    const { credentials } = ctx.request.body;
     const [email, password] = base64.decode(credentials).split(":");
 
     let user;
@@ -54,23 +54,29 @@ registrationRouter.post("/relogin", async (ctx, next) => {
     const accessToken = headers['x-access-token'] || ctx.cookies.get('accessToken');
 
     if (!accessToken) {
-      ctx.throw(HttpStatuses.UNAUTHORIZED);
+        ctx.throw(HttpStatuses.UNAUTHORIZED);
     }
 
     const user = await userService.findByAccessToken(accessToken);
     let isTokenValid;
 
     try {
-      isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
+        isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
     } catch (error) {
-      ctx.throw(HttpStatuses.UNAUTHORIZED);
+        ctx.throw(HttpStatuses.UNAUTHORIZED);
     }
 
     if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
-      ctx.throw(HttpStatuses.UNAUTHORIZED);
+        ctx.throw(HttpStatuses.UNAUTHORIZED);
     }
 
     ctx.body = omit(user.get(), "passwordHash", "salt");
+});
+
+registrationRouter.post("/logout", async (ctx, next) => {
+    ctx.cookies.set('accessToken', '')
+    ctx.redirect("/");
+    // ctx.body = { message: "Logged out" }
 });
 
 export default registrationRouter;

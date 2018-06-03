@@ -1,10 +1,13 @@
 import * as passport from "koa-passport";
-import {Profile} from "passport";
-import {Strategy as TwitterStrategy} from "passport-twitter";
-import {Strategy as MediumStrategy} from "passport-medium"; // tslint:disable-line
+import { Profile } from "passport";
+import { Strategy as TwitterStrategy } from "passport-twitter";
+import { Strategy as MediumStrategy } from "passport-medium"; // tslint:disable-line
 
 import * as db from '../models';
 import * as userService from "../services/userService";
+import { generatePassword } from "../utils/encryptionUtils";
+
+import { IUser } from '../models/User';
 
 const TWITTER_CONFIG = {
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
@@ -25,17 +28,32 @@ function configurePassport() {
                 return done(new Error("Unable to authorize with Twitter"));
             }
 
-            console.log('profile', profile);
+            db.User.findOrCreate({
+                where: { fullName: profile.displayName },
+                defaults: {
+                    fullName: profile.displayName,
+                    email: profile.emails ? profile.emails[0] : 'empty',
+                    password: generatePassword()
+                }
+            }).spread((user: any, created: boolean) => {
+                    userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
 
-            //TODO запросить email
-
-            db.User.findOne({where: {fullName: profile.name}})
-            .then((user) => {
-                db.SocialIntegration.findOrCreate({where: {
-
-                }})
-            })
-            db.SocialIntegration
+                    db.SocialIntegration.findOrCreate({
+                        where: {
+                            externalUserId: profile.id
+                        },
+                        defaults: {
+                            type: profile.provider,
+                            username: profile.username,
+                            externalUserId: profile.id,
+                            accessToken: token,
+                            avatarUrl: profile.photos ? profile.photos[0].value : null,
+                            userId: user.id
+                        }
+                    }).then((integration: any) => {
+                        console.log('Integration created', integration.get());
+                    });
+                });
 
             console.log("Authenticated as Twitter user", profile.displayName);
             console.log("Tokens", token, tokenSecret);

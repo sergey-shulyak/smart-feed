@@ -2,6 +2,8 @@ import * as env from "dotenv";
 
 env.load();
 
+import * as http from 'http';
+
 import * as Koa from "koa";
 import * as cors from "@koa/cors";
 import * as bodyParser from "koa-bodyparser";
@@ -39,6 +41,7 @@ app.use(async (ctx, next) => {
     try {
         await next();
     } catch (error) {
+        console.error(error);
         ctx.status = error.status || 500;
         ctx.body = { error: error.message };
     }
@@ -61,6 +64,7 @@ app.use(passport.initialize());
 // Router
 app.use(router.routes());
 
+
 // Launch
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server running on ${port}`));
+app.listen(port, "0.0.0.0",  () => console.log(`Server running on ${port}`));

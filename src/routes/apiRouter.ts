@@ -38,4 +38,9 @@ apiRouter.get("/secured", async (ctx, next) => {
   ctx.body = ctx.request.body;
 });
 
+apiRouter.get("/user", async (ctx, next) => {
+  const user = await findByAccessToken(ctx.cookies.get("accessToken"));
+  ctx.body = user.get();
+});
+
 export default apiRouter;

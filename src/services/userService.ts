@@ -64,6 +64,7 @@ export async function authorizeUser(user: any) {
 
 export async function findByAccessToken(accessToken: string) {
   return await User.findOne({
-    where: { accessToken }
+    where: { accessToken },
+    attributes: { exclude: ["passwordHash", "salt"] }
   });
 }

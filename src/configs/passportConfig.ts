@@ -4,7 +4,7 @@ import { Strategy as TwitterStrategy } from "passport-twitter";
 import { Strategy as MediumStrategy } from "passport-medium"; // tslint:disable-line
 
 import * as db from '../models';
-import * as userService from "../services/userService";
+import * as userService from "../services/UserService";
 import { generatePassword } from "../utils/encryptionUtils";
 
 import { IUser } from '../models/User';
@@ -47,11 +47,12 @@ function configurePassport() {
                             username: profile.username,
                             externalUserId: profile.id,
                             accessToken: token,
+                            accessTokenSecret: tokenSecret,
                             avatarUrl: profile.photos ? profile.photos[0].value : null,
                             userId: user.id
                         }
                     }).then((integration: any) => {
-                        console.log('Integration created', integration.get());
+                        console.log('Integration created', integration);
                     });
                 });
 

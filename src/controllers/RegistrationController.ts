@@ -1,15 +1,14 @@
-import * as passport from "passport";
 import * as Router from "koa-router";
 import * as HttpStatuses from "http-status-codes";
 import * as base64 from "base-64";
 import { omit } from "lodash";
 
-import * as userService from "../services/userService";
+import * as userService from "../services/UserService";
 import { verify } from "jsonwebtoken";
 
-const registrationRouter = new Router();
+const registrationController = new Router();
 
-registrationRouter.post("/register", async (ctx, next) => {
+registrationController.post("/register", async (ctx, next) => {
     const userData = ctx.request.body;
     let createdUser;
 
@@ -29,7 +28,7 @@ registrationRouter.post("/register", async (ctx, next) => {
     ctx.body = omit(createdUser.get(), "passwordHash", "salt");
 });
 
-registrationRouter.post("/login", async (ctx, next) => {
+registrationController.post("/login", async (ctx, next) => {
     const { credentials } = ctx.request.body;
     const [email, password] = base64.decode(credentials).split(":");
 
@@ -48,7 +47,7 @@ registrationRouter.post("/login", async (ctx, next) => {
     ctx.body = omit(user.get(), "passwordHash");
 });
 
-registrationRouter.post("/relogin", async (ctx, next) => {
+registrationController.post("/relogin", async (ctx, next) => {
     const { headers } = ctx.request;
 
     const accessToken = headers['x-access-token'] || ctx.cookies.get('accessToken');
@@ -73,10 +72,10 @@ registrationRouter.post("/relogin", async (ctx, next) => {
     ctx.body = omit(user.get(), "passwordHash", "salt");
 });
 
-registrationRouter.post("/logout", async (ctx, next) => {
+registrationController.post("/logout", async (ctx, next) => {
     ctx.cookies.set('accessToken', '')
     ctx.redirect("/");
     // ctx.body = { message: "Logged out" }
 });
 
-export default registrationRouter;
+export default registrationController;

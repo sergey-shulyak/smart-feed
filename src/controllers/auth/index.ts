@@ -1,8 +1,8 @@
 import * as passport from "passport";
 import * as Router from "koa-router";
 
-import twitterRouter from "./twitterAuthRouter";
-import mediumRouter from "./mediumAuthRouter";
+import twitterRouter from "./TwitterAuthController";
+import mediumRouter from "./MediumAuthController";
 
 const authRouter = new Router();
 

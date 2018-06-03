@@ -9,12 +9,10 @@ export default function (sequelize: Sequelize, dataTypes: DataTypes) {
         },
         publicationId: {
             type: dataTypes.INTEGER,
-            allowNull: false,
             field: "publication_id"
         },
         categoryId: {
             type: dataTypes.INTEGER,
-            allowNull: false,
             field: "category_id"
         }
     }, {

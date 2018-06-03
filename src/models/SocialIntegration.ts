@@ -1,32 +1,36 @@
-import { DataTypes, Sequelize } from "sequelize";
+import {DataTypes, Sequelize} from "sequelize";
 
 export default function (sequelize: Sequelize, dataTypes: DataTypes) {
     const SocialIntegration = sequelize.define("SocialIntegration", {
-        id: {
-            type: dataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+            id: {
+                type: dataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            type: {
+                type: dataTypes.STRING,
+                allowNull: false
+            },
+            accessToken: {
+                type: dataTypes.STRING,
+                field: "access_token"
+            },
+            accessTokenSecret: {
+                type: dataTypes.STRING,
+                field: "access_token_secret"
+            },
+            externalUserId: {
+                type: dataTypes.STRING,
+                field: "external_user_id"
+            },
+            username: {
+                type: dataTypes.STRING
+            },
+            userId: {
+                type: dataTypes.INTEGER,
+                field: "user_id"
+            }
         },
-        type: {
-            type: dataTypes.STRING,
-            allowNull: false
-        },
-        accessToken: {
-            type: dataTypes.STRING,
-            field: "access_token"
-        },
-        externalUserId: {
-            type: dataTypes.STRING,
-            field: "external_user_id"
-        },
-        username: {
-            type: dataTypes.STRING
-        },
-        userId: {
-            type: dataTypes.INTEGER,
-            field: "user_id"
-        }
-    },
         {
             tableName: "social_integrations",
             schema: "feed",

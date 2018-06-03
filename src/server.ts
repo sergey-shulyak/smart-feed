@@ -11,7 +11,7 @@ import * as session from "koa-session";
 import * as passport from "koa-passport";
 
 import * as db from "./models";
-import router from "./routes";
+import router from "./controllers";
 import configurePassport from "./configs/passportConfig";
 import * as HttpStatuses from "http-status-codes";
 import { verify } from "jsonwebtoken";

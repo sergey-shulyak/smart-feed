@@ -8,7 +8,7 @@ mediumRouter.get(
   "/callback",
   passport.authenticate("medium", {
     scope: ["basicProfile"],
-    successRedirect: "/profile",
+    successRedirect: "/feed",
     failureRedirect: "/error"
   })
 );

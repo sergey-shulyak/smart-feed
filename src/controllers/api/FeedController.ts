@@ -1,12 +1,13 @@
 import * as Router from "koa-router";
-import {findByAccessToken} from "../../services/UserService";
+import {findByAccessToken, findById} from "../../services/UserService";
 import {getFeed, getFeedByCategory} from "../../services/FeedService";
 import {fetchAllPublications} from "../../services/PublicationService";
 
 const feedController = new Router();
 
 feedController.get("/", async (ctx) => {
-    const user = await findByAccessToken(ctx.cookies.get("accessToken"));
+    // const user = await findByAccessToken(ctx.cookies.get("accessToken"));
+    const user = await findById(4);
     // console.log('TOKEN FROM API', ctx.cookies.get('accessToken'));
 
     await fetchAllPublications(user);

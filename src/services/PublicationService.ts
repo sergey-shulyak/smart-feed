@@ -1,6 +1,7 @@
 import * as db from "../models";
 import axios from 'axios';
 import * as Twitter from 'twitter';
+import * as util from 'util';
 
 export async function findUserFavorites(user: any) {
     return await user.getPublications();
@@ -19,32 +20,18 @@ export async function removeUserFavorite(user: any, publicationId: number) {
 }
 
 async function fetchPublications(user: any, type: string, accessToken, accessTokenSecret) {
-    // const twitterAccount = await user.getSocialIntegrations({where: {type: 'twitter'}});
-    // console.log("TWITTER ACC", twitterAccount);
-
-    const twitter = new Twitter({
-        consumer_key: process.env.TWITTER_CONSUMER_KEY,
-        consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-        access_token_key: accessToken,
-        access_token_secret: accessTokenSecret
-    });
-
     switch (type) {
         case 'twitter':
-            //
-            // twitter.get('statuses/user_timeline', {}, async (error, tweets, response) => {
-            //     if (!error) {
-            //         console.log(tweets);
-            //     }
-            //
-            //     console.log("TWEETS", tweets);
-            // });
-            return [{
-                // добавить mockApi?))))
-                id: 228,
-                text: "If you log an instance you will notice, that there is a lot of additional stuff. In order to hide such stuff and reduce it to the very interesting information, you can use theget-attribute. Calling it with the option plain = true will only return the values of an instance.",
-                url: 'https://google.com'
-            }];
+            const twitter = new Twitter({
+                consumer_key: process.env.TWITTER_CONSUMER_KEY,
+                consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+                access_token_key: accessToken,
+                access_token_secret: accessTokenSecret
+            });
+
+            const {statuses} = await twitter.get('search/tweets', {q: 'node.js'});
+            return statuses;
+
         case 'facebook':
             break;
         case 'medium':
@@ -57,25 +44,28 @@ async function fetchPublications(user: any, type: string, accessToken, accessTok
 export async function fetchAllPublications(user) {
     const socialIntegrations = await user.getSocialIntegrations();
 
-    console.log("S INT", socialIntegrations);
-
     let publications: object[] = [];
 
+
     for (const integration of socialIntegrations) {
-        publications = [...publications, ...await fetchPublications(user, integration.type, integration.accessToken)];
+        publications = [
+            ...publications,
+            ...await fetchPublications(user, integration.type, integration.accessToken, integration.accessTokenSecret)];
     }
+
 
     for (const publication of publications) {
-        await db.Publication.findOrCreate({where: {id: publication.id}, defaults: {...publication}});
+        await db.Publication.findOrCreate({
+            where: {id: publication.id_str},
+            defaults: {text: publication.text, url: ''}
+        });
     }
 
-    const data = {data: publications};
+    const data = {data: publications.map(pub => ({id: pub.id_str, text: pub.text}))};
 
     const {data: respData} = await axios.get("http://localhost:3005/classifyBulk", {
         data
     });
-
-    console.log("CLASSIFIED DATA", respData.classifiedData);
 
     for (const classifiedPublication of respData.classifiedData) {
         const category = await db.Category.findById(classifiedPublication.categoryId);

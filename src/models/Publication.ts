@@ -3,7 +3,7 @@ import {Sequelize, DataTypes} from "sequelize";
 export default function (sequelize: Sequelize, dataTypes: DataTypes) {
     const Publication = sequelize.define('Publication', {
         id: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.BIGINT,
             primaryKey: true,
             autoIncrement: true
         },

@@ -36,7 +36,9 @@ function configurePassport() {
                     password: generatePassword()
                 }
             }).spread((user: any, created: boolean) => {
-                    userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
+                    if (created) {
+                        userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
+                    }
 
                     db.SocialIntegration.findOrCreate({
                         where: {
@@ -51,15 +53,18 @@ function configurePassport() {
                             avatarUrl: profile.photos ? profile.photos[0].value : null,
                             userId: user.id
                         }
-                    }).then((integration: any) => {
+                    }).spread((integration: any) => {
+                        integration.update({
+                            accessToken: token,
+                            accessTokenSecret: tokenSecret
+                        });
+
+                        user.addSocialIntegration(integration);
                         console.log('Integration created', integration);
+
+                        return done(null, user);
                     });
                 });
-
-            console.log("Authenticated as Twitter user", profile.displayName);
-            console.log("Tokens", token, tokenSecret);
-
-            return done(null, profile);
         })
     );
 

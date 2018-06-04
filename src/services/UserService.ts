@@ -69,6 +69,10 @@ export async function findByAccessToken(accessToken: string) {
     });
 }
 
+export async function findById(id: number) {
+    return await db.User.findById(id);
+}
+
 export async function getSocialIntegrations(user: any) {
     return await user.getSocialIntegrations();
 }

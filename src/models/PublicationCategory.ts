@@ -8,7 +8,7 @@ export default function (sequelize: Sequelize, dataTypes: DataTypes) {
             autoIncrement: true
         },
         publicationId: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.BIGINT,
             field: "publication_id"
         },
         categoryId: {

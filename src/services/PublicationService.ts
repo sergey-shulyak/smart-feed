@@ -1,6 +1,7 @@
 import * as db from "../models";
 import axios from 'axios';
 import * as Twitter from 'twitter';
+import * as moment from 'moment'
 
 export async function findUserFavorites(user: any) {
     return await user.getPublications();
@@ -36,13 +37,19 @@ async function fetchPublications(user: any, type: string, accessToken, accessTok
                 access_token_secret: accessTokenSecret
             });
 
-            const {statuses} = await twitter.get('search/tweets', {q: 'node.js'});
-            return statuses;
-
+            const { statuses: tweets } = await twitter.get('search/tweets', { q: 'node.js' });
+            return tweets.map(tweet => ({
+                ...tweet,
+                createdAt: moment(tweet.created_at, "ddd MMM DD HH:mm:ss ZZ YYYY").valueOf(),
+                title: tweet.text.substr(0, 20),
+                id: tweet.id_str,
+                url: tweet.urls ? tweet.urls[0].url : null
+            }));
         case 'facebook':
             break;
         case 'medium':
-            break;
+            const {data: publications} = await axios.get("http://localhost:3010/Medium");
+            return publications
         default:
             break;
     }
@@ -63,14 +70,20 @@ export async function fetchAllPublications(user: any) {
 
     for (const publication of publications) {
         await db.Publication.findOrCreate({
-            where: {id: publication.id_str},
-            defaults: {text: publication.text, url: ''}
+            where: { id: publication.id },
+            defaults: {
+                title: publication.title,
+                url: publication.url,
+                createdAt: publication.createdAt,
+                text: publication.text
+            }
         });
     }
 
-    const data = {data: publications.map(pub => ({id: pub.id_str, text: pub.text}))};
+    // const data = {data: publications.map(pub => ({id: pub.id_str, text: pub.text}))};
+    const data = { data: publications };
 
-    const {data: respData} = await axios.get("http://localhost:3005/classifyBulk", {
+    const { data: respData } = await axios.get("http://localhost:3005/classifyBulk", {
         data
     });
 

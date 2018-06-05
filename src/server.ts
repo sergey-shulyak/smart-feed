@@ -51,8 +51,8 @@ app.use(async (ctx, next) => {
 app.use(logging);
 
 // Session
-app.keys = ["super-secret"];
-app.use(session({}, app));
+app.keys = ['secret']
+app.use(session({}, app))
 
 // Body parser
 app.use(bodyParser());
@@ -60,6 +60,7 @@ app.use(bodyParser());
 // Auth
 configurePassport();
 app.use(passport.initialize());
+app.use(passport.session())
 
 // Router
 app.use(router.routes());

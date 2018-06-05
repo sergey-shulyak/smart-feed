@@ -31,11 +31,14 @@ export default function (sequelize: Sequelize, dataTypes: DataTypes) {
         },
         salt: {
             type: dataTypes.INTEGER,
-            // allowNull: false
         },
         accessToken: {
             type: dataTypes.STRING,
             field: 'access_token'
+        },
+        avatarUrl: {
+            type: dataTypes.STRING,
+            field: 'avatar_url'
         }
     }, {
         tableName: 'users',

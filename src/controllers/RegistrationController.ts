@@ -75,7 +75,8 @@ registrationController.post("/relogin", async (ctx, next) => {
 
 registrationController.get("/logout", async (ctx, next) => {
     ctx.cookies.set('accessToken', '')
-    ctx.body = { message: "Logged out" }
+    ctx.redirect('http://localhost:3001');
+    // ctx.body = { message: "Logged out" }
 });
 
 export default registrationController;

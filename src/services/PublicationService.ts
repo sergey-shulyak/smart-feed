@@ -2,6 +2,7 @@ import * as db from "../models";
 import axios from 'axios';
 import * as Twitter from 'twitter';
 import * as moment from 'moment'
+import {uniqWith} from 'lodash';
 
 export async function findUserFavorites(user: any) {
     return await user.getPublications();
@@ -80,8 +81,8 @@ export async function fetchAllPublications(user: any) {
         });
     }
 
-    // const data = {data: publications.map(pub => ({id: pub.id_str, text: pub.text}))};
-    const data = { data: publications };
+    const noDuplicatesPublications = uniqWith(publications, (publication, other) => publication.id === other.id);
+    const data = { data: noDuplicatesPublications };
 
     const { data: respData } = await axios.get("http://localhost:3005/classifyBulk", {
         data

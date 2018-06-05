@@ -22,6 +22,16 @@ const MEDIUM_CONFIG = {
 };
 
 function configurePassport() {
+    passport.serializeUser((user, done) => {
+        done(null, user.id);
+    });
+
+    passport.deserializeUser((id, done) => {
+        return db.Users.findById(id)
+            .then((user) => { done(null, user); })
+            .catch((err) => { done(err, null); });
+    });
+
     passport.use(
         new TwitterStrategy(TWITTER_CONFIG, (token, tokenSecret, profile, done) => {
             if (!profile) {
@@ -36,35 +46,35 @@ function configurePassport() {
                     password: generatePassword()
                 }
             }).spread((user: any, created: boolean) => {
-                    if (created) {
-                        userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
+                if (created) {
+                    userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
+                }
+
+                db.SocialIntegration.findOrCreate({
+                    where: {
+                        externalUserId: profile.id
+                    },
+                    defaults: {
+                        type: profile.provider,
+                        username: profile.username,
+                        externalUserId: profile.id,
+                        accessToken: token,
+                        accessTokenSecret: tokenSecret,
+                        avatarUrl: profile.photos ? profile.photos[0].value : null,
+                        userId: user.id
                     }
-
-                    db.SocialIntegration.findOrCreate({
-                        where: {
-                            externalUserId: profile.id
-                        },
-                        defaults: {
-                            type: profile.provider,
-                            username: profile.username,
-                            externalUserId: profile.id,
-                            accessToken: token,
-                            accessTokenSecret: tokenSecret,
-                            avatarUrl: profile.photos ? profile.photos[0].value : null,
-                            userId: user.id
-                        }
-                    }).spread((integration: any) => {
-                        integration.update({
-                            accessToken: token,
-                            accessTokenSecret: tokenSecret
-                        });
-
-                        user.addSocialIntegration(integration);
-                        console.log('Integration created', integration);
-
-                        return done(null, user);
+                }).spread((integration: any) => {
+                    integration.update({
+                        accessToken: token,
+                        accessTokenSecret: tokenSecret
                     });
+
+                    user.addSocialIntegration(integration);
+                    console.log('Integration created', integration);
+
+                    return done(null, user);
                 });
+            });
         })
     );
 

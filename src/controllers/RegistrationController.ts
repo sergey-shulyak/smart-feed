@@ -5,6 +5,7 @@ import { omit } from "lodash";
 
 import * as userService from "../services/UserService";
 import { verify } from "jsonwebtoken";
+import {authorizeUser} from "../services/UserService";
 
 const registrationController = new Router();
 
@@ -40,9 +41,9 @@ registrationController.post("/login", async (ctx, next) => {
         ctx.throw(error)
     }
 
-    const accessToken = await userService.authorizeUser(user);
+    const authorizedUser = await authorizeUser(user);
 
-    ctx.cookies.set('accessToken', accessToken);
+    ctx.cookies.set('accessToken', authorizedUser.accessToken);
 
     ctx.body = omit(user.get(), "passwordHash");
 });
@@ -72,10 +73,9 @@ registrationController.post("/relogin", async (ctx, next) => {
     ctx.body = omit(user.get(), "passwordHash", "salt");
 });
 
-registrationController.post("/logout", async (ctx, next) => {
+registrationController.get("/logout", async (ctx, next) => {
     ctx.cookies.set('accessToken', '')
-    ctx.redirect("/");
-    // ctx.body = { message: "Logged out" }
+    ctx.body = { message: "Logged out" }
 });
 
 export default registrationController;

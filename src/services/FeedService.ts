@@ -6,7 +6,7 @@ export async function getFeed(user: any) {
     const userCategories = await user.getCategories();
 
     return flatMap(await Promise.all(
-        userCategories.map(async category => await category.getPublications())
+        userCategories.map(async (category: any) => await category.getPublications())
     ));
 }
 

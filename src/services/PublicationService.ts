@@ -1,10 +1,17 @@
 import * as db from "../models";
 import axios from 'axios';
 import * as Twitter from 'twitter';
-import * as util from 'util';
 
 export async function findUserFavorites(user: any) {
     return await user.getPublications();
+}
+
+export async function findAllPublications() {
+    return await db.Publication.findAll();
+}
+
+export async function findPublication(id: number) {
+    return await db.Publication.findById(id);
 }
 
 export async function addUserFavorite(user: any, publicationId: number) {
@@ -41,7 +48,7 @@ async function fetchPublications(user: any, type: string, accessToken, accessTok
     }
 }
 
-export async function fetchAllPublications(user) {
+export async function fetchAllPublications(user: any) {
     const socialIntegrations = await user.getSocialIntegrations();
 
     let publications: object[] = [];

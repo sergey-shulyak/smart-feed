@@ -12,7 +12,6 @@ interface IUserData {
 
 export async function createUser(userData: IUserData) {
     const passwordHash = await hashPassword(userData.password);
-    console.log('HASH', passwordHash)
 
     try {
         return await db.User.create({...userData, passwordHash});
@@ -57,9 +56,7 @@ export async function authorizeUser(user: any) {
     const payload = pick(user, 'id', 'email', 'fullName');
     const accessToken = await sign(payload, process.env.JWT_PASSPHRASE, {expiresIn: "1d"});
 
-    await user.update({accessToken});
-
-    return user;
+    return await user.update({accessToken});
 }
 
 export async function findByAccessToken(accessToken: string) {

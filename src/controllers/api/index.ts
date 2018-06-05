@@ -7,6 +7,7 @@ import userController from "./UserController";
 import categoriesController from "./CategoriesController";
 import {findByAccessToken} from "../../services/UserService";
 import feedController from "./FeedController";
+import publicationsController from "./PublicationsController";
 
 const authMiddleware = (async (ctx: Context, next: () => {}) => {
     const {body, headers} = ctx.request;
@@ -37,8 +38,11 @@ const apiController = new Router();
 
 apiController.use(authMiddleware);
 
+// apiController.use("/feed", feedController.routes());
+// userController.use("/feed", feedController.routes())
+apiController.use(feedController.routes());
 apiController.use("/user", userController.routes());
 apiController.use("/categories", categoriesController.routes());
-apiController.use("/feed", feedController.routes());
+apiController.use("/publications", publicationsController.routes());
 
 export default apiController;

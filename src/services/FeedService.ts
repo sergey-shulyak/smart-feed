@@ -11,6 +11,7 @@ export async function getFeed(user: any) {
 }
 
 export async function getFeedByCategory(categoryTitle: string) {
+    console.log("TITLE", categoryTitle);
     const category = await db.Category.findOne({where: {title: categoryTitle}});
     return await category.getPublications();
 }

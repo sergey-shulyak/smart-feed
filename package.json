@@ -19,6 +19,7 @@
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.1",
     "lodash": "^4.17.10",
+    "medium-sdk": "0.0.4",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",

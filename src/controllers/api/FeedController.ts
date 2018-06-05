@@ -13,10 +13,9 @@ feedController.get("/", async (ctx) => {
 });
 
 feedController.get("/:categoryTitle", async (ctx) => {
-    const {userId, categoryTitle} = ctx.params;
-    const user = await findById(userId);
+    const {categoryTitle} = ctx.params;
 
-    ctx.body = await getFeedByCategory(user, categoryTitle);
+    ctx.body = await getFeedByCategory(categoryTitle);
 });
 
 export default feedController;

@@ -25,6 +25,8 @@ registrationController.post("/register", async (ctx, next) => {
 
     ctx.cookies.set('accessToken', accessToken);
 
+    ctx.login(createdUser);
+
     ctx.status = HttpStatuses.CREATED;
     ctx.body = omit(createdUser.get(), "passwordHash", "salt");
 });
@@ -41,9 +43,10 @@ registrationController.post("/login", async (ctx, next) => {
         ctx.throw(error)
     }
 
-    const authorizedUser = await authorizeUser(user);
+    const accessToken = await authorizeUser(user);
 
-    ctx.cookies.set('accessToken', authorizedUser.accessToken);
+    ctx.login(user.get());
+    ctx.cookies.set('accessToken', accessToken);
 
     ctx.body = omit(user.get(), "passwordHash");
 });
@@ -53,30 +56,42 @@ registrationController.post("/relogin", async (ctx, next) => {
 
     const accessToken = headers['x-access-token'] || ctx.cookies.get('accessToken');
 
-    if (!accessToken) {
-        ctx.throw(HttpStatuses.UNAUTHORIZED);
+    console.log('AUTH', ctx.isAuthenticated())
+    console.log('USER', ctx.state.user);
+    // console.log()
+
+    let user;
+
+    if (ctx.isAuthenticated()) {
+        user = await userService.findById(ctx.state.user.id);
+        ctx.body = omit(user.get(), "passwordHash", "salt");
     }
 
-    const user = await userService.findByAccessToken(accessToken);
-    let isTokenValid;
+    // if (!accessToken || !ctx.isAuthenticated()) {
+        // ctx.throw(HttpStatuses.UNAUTHORIZED);
+    // }
 
-    try {
-        isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
-    } catch (error) {
-        ctx.throw(HttpStatuses.UNAUTHORIZED);
-    }
+    // const user = await userService.findByAccessToken(accessToken);
+    // let isTokenValid = accessToken === user.accessToken;
 
-    if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
-        ctx.throw(HttpStatuses.UNAUTHORIZED);
-    }
+    // try {
+        // isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
+    // } catch (error) {
 
-    ctx.body = omit(user.get(), "passwordHash", "salt");
+    //     ctx.throw(HttpStatuses.UNAUTHORIZED);
+    // }
+
+    // if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
+    //     ctx.throw(HttpStatuses.UNAUTHORIZED);
+    // }
+
+
 });
 
 registrationController.get("/logout", async (ctx, next) => {
     ctx.cookies.set('accessToken', '')
+    ctx.logout();
     ctx.redirect('http://localhost:3001');
-    // ctx.body = { message: "Logged out" }
 });
 
 export default registrationController;

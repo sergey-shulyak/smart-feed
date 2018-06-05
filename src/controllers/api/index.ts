@@ -14,22 +14,22 @@ const authMiddleware = (async (ctx: Context, next: () => {}) => {
 
     const accessToken = headers['x-access-token'] || ctx.cookies.get('accessToken') || body && body.accessToken;
 
-    if (!accessToken) {
+    if (!accessToken && !ctx.isAuthenticated()) {
         ctx.throw(HttpStatuses.UNAUTHORIZED);
     }
 
-    const user = await findByAccessToken(accessToken);
-    let isTokenValid;
+    // const user = await findByAccessToken(accessToken);
+    // let isTokenValid;
 
-    try {
-        isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
-    } catch (error) {
-        ctx.throw(HttpStatuses.UNAUTHORIZED);
-    }
+    // try {
+    //     isTokenValid = Boolean(await verify(accessToken, process.env.JWT_PASSPHRASE));
+    // } catch (error) {
+    //     ctx.throw(HttpStatuses.UNAUTHORIZED);
+    // }
 
-    if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
-        ctx.throw(HttpStatuses.UNAUTHORIZED);
-    }
+    // if (!accessToken || !isTokenValid || user && user.accessToken !== accessToken) {
+    //     ctx.throw(HttpStatuses.UNAUTHORIZED);
+    // }
 
     await next();
 });
@@ -39,7 +39,7 @@ const apiController = new Router();
 apiController.use(authMiddleware);
 
 // apiController.use("/feed", feedController.routes());
-// userController.use("/feed", feedController.routes())
+// userController.use("/feed", feedController.routes());
 apiController.use(feedController.routes());
 apiController.use("/user", userController.routes());
 apiController.use("/categories", categoriesController.routes());

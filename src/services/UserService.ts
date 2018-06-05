@@ -1,7 +1,7 @@
-import {omit, pick} from "lodash";
-import {sign} from "jsonwebtoken";
+import { omit, pick } from "lodash";
+import { sign } from "jsonwebtoken";
 
-import {hashPassword, verifyPassword} from "../utils/encryptionUtils";
+import { hashPassword, verifyPassword } from "../utils/encryptionUtils";
 import * as db from "../models";
 
 interface IUserData {
@@ -14,7 +14,7 @@ export async function createUser(userData: IUserData) {
     const passwordHash = await hashPassword(userData.password);
 
     try {
-        return await db.User.create({...userData, passwordHash});
+        return await db.User.create({ ...userData, passwordHash });
     } catch (error) {
         return error;
     }
@@ -23,7 +23,7 @@ export async function createUser(userData: IUserData) {
 export async function findByEmailAndPassword(email: string, password: string) {
     const user = await db.User.findOne({
         attributes: ["id", "email", "fullName", "passwordHash"],
-        where: {email}
+        where: { email }
     });
 
     if (!user) {
@@ -42,7 +42,7 @@ export async function findByEmailAndPassword(email: string, password: string) {
 export async function findByEmail(email: string) {
     const user = await db.User.findOne({
         attributes: ["id", "email", "fullName", "passwordHash"],
-        where: {email}
+        where: { email }
     });
 
     if (!user) {
@@ -52,17 +52,23 @@ export async function findByEmail(email: string) {
     return user;
 }
 
-export async function authorizeUser(user: any) {
+export async function authorizeUser(user: any, token?: string) {
     const payload = pick(user, 'id', 'email', 'fullName');
-    const accessToken = await sign(payload, process.env.JWT_PASSPHRASE, {expiresIn: "1d"});
 
-    return await user.update({accessToken});
+    let accessToken;
+
+    if (!token) {
+        accessToken = await sign(payload, process.env.JWT_PASSPHRASE, { expiresIn: "1d" });
+    }
+
+    await user.update({ accessToken: accessToken || token });
+    return accessToken;
 }
 
 export async function findByAccessToken(accessToken: string) {
     return await db.User.findOne({
-        where: {accessToken},
-        attributes: {exclude: ["passwordHash", "salt"]}
+        where: { accessToken },
+        attributes: { exclude: ["passwordHash", "salt"] }
     });
 }
 
@@ -76,5 +82,5 @@ export async function getSocialIntegrations(user: any) {
 
 
 export async function updateUser(user, update) {
-    return await user.update({...update});
+    return await user.update({ ...update });
 }

@@ -27,8 +27,8 @@ function configurePassport() {
     });
 
     passport.deserializeUser((id, done) => {
-        return db.Users.findById(id)
-            .then((user) => { done(null, user); })
+        return db.User.findById(id)
+            .then((user) => { done(null, user.get()); })
             .catch((err) => { done(err, null); });
     });
 
@@ -46,9 +46,9 @@ function configurePassport() {
                     password: generatePassword()
                 }
             }).spread((user: any, created: boolean) => {
-                if (created) {
-                    userService.authorizeUser(user).then((tkn: string) => console.log('Created token for user: ', tkn));
-                }
+                // if (created) {
+                userService.authorizeUser(user, token).then((tkn: string) => console.log('Created token for user: ', tkn));
+                // }
 
                 db.SocialIntegration.findOrCreate({
                     where: {
@@ -70,7 +70,6 @@ function configurePassport() {
                     });
 
                     user.addSocialIntegration(integration);
-                    console.log('Integration created', integration);
 
                     return done(null, user);
                 });
@@ -91,9 +90,6 @@ function configurePassport() {
                 if (!profile) {
                     return done(new Error("Unable to authorize with Medium"));
                 }
-
-                console.log("Authenticated as Medium user", profile.displayName);
-                console.log("Tokens", accessToken);
 
                 return done(null, profile);
             }

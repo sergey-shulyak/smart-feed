@@ -56,18 +56,26 @@ async function fetchPublications(user: any, type: string, accessToken, accessTok
     }
 }
 
+interface IPublication {
+    id: number,
+    title: string,
+    url: string,
+    createdAt: Date,
+    text: string
+}
+
+const CLASSIFICATION_ENDPOINT = "http://localhost:3005/classifyBulk";
+
 export async function fetchAllPublications(user: any) {
     const socialIntegrations = await user.getSocialIntegrations();
 
-    let publications: object[] = [];
-
+    let publications: IPublication[] = [];
 
     for (const integration of socialIntegrations) {
         publications = [
             ...publications,
             ...await fetchPublications(user, integration.type, integration.accessToken, integration.accessTokenSecret)];
     }
-
 
     for (const publication of publications) {
         await db.Publication.findOrCreate({
@@ -81,17 +89,18 @@ export async function fetchAllPublications(user: any) {
         });
     }
 
+
     const noDuplicatesPublications = uniqWith(publications, (publication, other) => publication.id === other.id);
     const data = { data: noDuplicatesPublications };
 
-    const { data: respData } = await axios.get("http://localhost:3005/classifyBulk", {
+    const { data: responseData } = await axios.get(CLASSIFICATION_ENDPOINT, {
         data
     });
 
-    for (const classifiedPublication of respData.classifiedData) {
+    for (const classifiedPublication of responseData.classifiedData) {
         const category = await db.Category.findById(classifiedPublication.categoryId);
         await (await db.Publication.findById(classifiedPublication.publicationId)).addCategory(category);
     }
 
-    return respData.classifiedData;
+    return responseData.classifiedData;
 }
